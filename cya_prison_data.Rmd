@@ -1,0 +1,108 @@
+---
+title: "PS 149: Problem Set 4"
+output: html_notebook
+---
+
+### Replicating and Interpreting Ouss (2020) (45 points)
+
+#### Q1a. We have prepared a dataset with adult prison juvenile detention admissions in California by year. Load tidyverse and fixest, then read the "cya_prison.csv" file into R using read_csv and call it `ouss`. Print the data to see the column names and figure out what makes a row. (5 points)
+
+```{r}
+library(tidyverse)
+library(fixest)
+ouss <- read_csv("cya_prison.csv")
+ouss
+```
+
+
+#### Q1b. Using the data you imported in Q1a, how many people were admitted to the juvenile system in 1993? (5 points) 
+3638
+
+
+
+#### Q2. Make a plot of normalized admissions to the adult and juvenile systems grouping the data by `system` and using `geom_point()` and `geom_line()` to make a connected line plot. Add a vertical line at `x=1996.5` to mark the year when California started charging counties more for using the juvenile system. (10 points) 
+
+```{r}
+ouss %>%
+  ggplot(aes(x = year, y = admissions_normalized, group = system, color = system)) +
+  geom_line() +
+  geom_point() +
+  geom_vline(xintercept = 1996.5) +
+  theme_bw()
+```
+
+
+#### Q3a. Let's use regression to estimate how many fewer people counties incarcerate when they bare more of the cost. Starting with `ouss`, use `mutate()` to create a new variable named `after` that is true when `year` is greater than 1996. Then, use the `feols()` function to produce the regression version of a diff-in-diff estimate, measuring the change in normalized admissions to juvenile facilities from before to after the reform and comparing it to the change in normalized admissions to adult facilities over the same period. (5 points) 
+
+```{r}
+ouss %>%
+  mutate(after = year > 1996) %>%
+  feols(admissions_normalized ~ after + juvenile + after*juvenile, se="hetero", data=.)
+```
+
+
+#### Q3b. Based on the regression you ran in Q3a, what was the average level of normalized adult prison admissions before 1997? (5 points)
+1.018600
+
+
+
+
+#### Q3c. Based on the regression you ran in Q3a, how much higher were normalized juvenile detention admissions than normalized adult prison admissions before 1997? (5 points)
+0.028367
+
+
+
+
+#### Q3d. Based on the regression you ran in Q3a, how much did normalized adult prison admissions change after 1996, and did they increase or decrease? (5 points)
+0.022041
+
+
+
+#### Q3e. Based on the regression you ran in Q3a, what was the effect of increasing the cost of juvenile detention on normalized admissions to juvenile facilities? (5 points)
+-0.596878 % pts
+
+
+
+
+
+### Substantive Arguments About the Politics of Judges and Prosecutors (35 points)
+
+#### Q4. According to Ouss (2020), how do counties change their incarceration rate when the cost of incarceration increases? (5 points)
+The incarceration rate decreases when the cost of incarceration increases. 
+
+
+
+
+#### Q5. According to Gordon and Huber (2004, 2007), why do voters support judges who hand out longer sentences? (5 points)
+Voters support judges who hand out longer sentences because it allows for them to learn more about the judge themselves as opposed to a judge who had given less sentences.
+
+
+
+
+#### Q6. According to Gordon and Huber (2004, 2007), why do judges hand out longer sentences as election approaches? (5 points)
+Judges hand out longer sentences because they are incentivized to respond more to the voters, especially those who like longer sentences.
+
+
+
+
+#### Q7. According to Lim, Snyder, and Stromberg (2015), do judges increase or decrease sentence lengths when they are subject to more media coverage? Why? (5 points)
+Judges increase sentence lengths when they are subject to more media coverage because voters tend to prefer harsher punishments and media coverage helps voters identify with those judgers with tougher penal preferences. 
+
+
+#### Q8. Lim, Snyder, and Stromberg (2015) study the effect of media coverage on sentencing, but they do not use one of the research designs we have discussed in this class (diff-in-diff and RD). If they wanted to use a difference-in-differences design to study the effect of newspapers on judicial voting, how might they go about it? (5 points)
+Find a difference in the level of harshness when a judge has media coverage vs. when a judge doesn't have media coverage. The period without media coverage should come first and media coverage after to display whether or not a judge has an increased effect. 
+
+
+
+
+#### Q9. Based on the findings in Lim, Silveira, and Snyder (2016), how much shorter would your sentence be if the judge deciding your sentence were a Democrat rather than a Republican, assuming they are serving in the same district? (5 points)
+The sentencing for a Democrat vs. Republican judge would be fairly similar.
+
+
+
+
+#### Q10. Based on the findings in Lim, Silveira, and Snyder (2016), would your sentence be shorter if the judge deciding your sentence were elected in a heavily Democratic county or a heavily Republican district? Why? (5 points)
+Statically it would be difficult to conclude that your sentence would be affected if the judge deciding it presided within a heavily Democratic or Republican county. There is little to no effect on this instance of sentencing.
+
+
+
