@@ -1,0 +1,13 @@
+name: "cya_prisons"
+  output_dir: "docs"
+  navbar:
+    title: "cya_prisons"
+    left:
+    - text: "Home"
+        href: index.html
+    - text: "Prisons-elections-research"
+        href: prisons-elections-research.html
+  output:
+    html_document:
+      theme: cosmo
+  
